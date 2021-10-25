@@ -26,6 +26,7 @@
     "node-sass": "^4.12.0",
     "prettier": "^2.2.1",
     "sass-loader": "^8.0.2",
+    "vue-cli-plugin-svg": "~0.2.1",
     "vue-template-compiler": "^2.6.11"
   }
 }
