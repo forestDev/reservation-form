@@ -1,6 +1,6 @@
 <template>
   <div>
-    <base-form :price="price" :stars="stars" />
+    <base-form :price="price" :stars="stars" :currency="currency" />
   </div>
 </template>
 
@@ -14,6 +14,7 @@ export default {
   data: () => ({
     stars: 4.5,
     price: 298,
+    currency: "zł",
   }),
 };
 </script>

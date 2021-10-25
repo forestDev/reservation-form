@@ -18,7 +18,7 @@ export default {};
   display: flex;
   font-size: 18px;
   border: none;
-  border-radius: 4px;
+  border-radius: $radius;
   align-content: center;
   justify-content: center;
 }

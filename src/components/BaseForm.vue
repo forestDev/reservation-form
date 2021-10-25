@@ -5,17 +5,17 @@
       <img
         src="@/assets/svg/star-full.svg?data"
         v-for="(_, idx) in fullStars"
-        :key="idx"
+        :key="`${idx}-full`"
       />
       <img
         src="@/assets/svg/star-half.svg?data"
         v-for="(_, idx) in halfStars"
-        :key="idx"
+        :key="`${idx}-half`"
       />
       <img
         src="@/assets/svg/star-empty.svg?data"
         v-for="(_, idx) in emptyStars"
-        :key="idx"
+        :key="`${idx}-empty`"
       />
       <span class="form__opinions-number">
         {{ opinionsNumber }}
@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import Calendar from "@/components/Calendar";
+import Calendar from "@/components/calendar/index";
 import BaseButton from "@/components/BaseButton";
 
 const MAX_STARS = 5;
@@ -90,7 +90,7 @@ export default {
   margin-right: auto;
   max-width: 320px;
   border: 1px solid $gray;
-  border-radius: 4px;
+  border-radius: $radius;
   padding: $gap;
   &__line {
     @include horizontal-line;
