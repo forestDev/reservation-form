@@ -3,3 +3,13 @@
     width: 100%;
     background: $gray;
 }
+@mixin day-circle {
+    border: 2px solid $primary;
+    border-radius: 999px;
+    height: 100%;
+    width: 100%;
+    min-width: 30px;
+    min-height: 30px;
+    max-width: 48px;
+    max-height: 48px;
+}

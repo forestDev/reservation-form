@@ -1,21 +1,34 @@
 <template>
   <div>
+    <pre>
+          {{ selectedRangeDates }}
+      </pre
+    >
     <label v-if="label">{{ label }}</label>
     <div class="wrapper">
-      <div class="wrapper__input">{{ checkIn }}</div>
+      <div class="wrapper__input">
+        {{ checkIn ? checkIn : checkInPlaceholder }}
+      </div>
       <img
         class="wrapper__img"
         src="@/assets/images/right-arrow.png"
         alt="arrow right"
       />
-      <div class="wrapper__input">{{ checkOut }}</div>
+      <div class="wrapper__input">
+        {{ checkOut ? checkOut : checkOutPlaceholder }}
+      </div>
       <div class="calendar">
         <calendar-header
           :month.sync="selectedMonth"
           :year.sync="selectedYear"
           @change="measureDaysToDisplay"
         />
-        <calendar-weekdays :days="daysToDisplay" />
+        <calendar-weekdays
+          :days="daysToDisplay"
+          @select="onSelectDay"
+          :selectedRangeDates="selectedRangeDates"
+          @hoverDay="setPreviewDate"
+        />
       </div>
     </div>
   </div>
@@ -26,7 +39,7 @@ import dayjs from "dayjs";
 import calendarHeader from "./calendarHeader.vue";
 import calendarWeekdays from "./calendarWeekdays.vue";
 
-var weekday = require("dayjs/plugin/weekday");
+const weekday = require("dayjs/plugin/weekday");
 dayjs.extend(weekday);
 
 export default {
@@ -35,12 +48,15 @@ export default {
     calendarWeekdays,
   },
   data: () => ({
-    checkIn: "Check In",
-    checkOut: "Check Out",
+    checkInPlaceholder: "Check In",
+    checkOutPlaceholder: "Check Out",
     selectedMonth: dayjs().month(),
     selectedYear: dayjs().year(),
     daysToDisplay: [],
     now: null,
+    checkIn: null,
+    checkOut: null,
+    previewDate: null,
   }),
   props: {
     label: {
@@ -53,6 +69,29 @@ export default {
     this.measureDaysToDisplay();
   },
   methods: {
+    setPreviewDate(item) {
+      this.previewDate = item.date;
+    },
+    onSelectDay(item) {
+      if (!this.checkIn) {
+        this.checkIn = item.date;
+      } else if (!this.checkOut) {
+        this.checkOut = item.date;
+        this.handleSelectedRange();
+      } else {
+        this.checkIn = item.date;
+        this.checkOut = null;
+      }
+    },
+    handleSelectedRange(firstDate = this.checkIn, secondDate = this.checkOut) {
+      if (dayjs(firstDate).isAfter(secondDate)) {
+        this.checkIn = secondDate;
+        this.checkOut = firstDate;
+      } else {
+        this.checkIn = firstDate;
+        this.checkOut = secondDate;
+      }
+    },
     measureDaysToDisplay() {
       this.daysToDisplay = this.getDaysToDisplay().slice(0, 35);
     },
@@ -132,6 +171,20 @@ export default {
     },
   },
   computed: {
+    selectedRangeDates() {
+      const ranges = [];
+      if (this.checkIn) {
+        ranges.push(this.checkIn);
+      }
+      if (!this.checkOut && this.previewDate) {
+        ranges.push(this.previewDate);
+      } else if (this.checkOut) {
+        ranges.push(this.checkOut);
+      }
+      return ranges.sort((a, b) => {
+        if (dayjs(b).isAfter(a)) return -1;
+      });
+    },
     prevMonth() {
       return this.selectedMonth === 0 ? 11 : this.selectedMonth - 1;
     },
@@ -174,6 +227,7 @@ export default {
   }
   .calendar {
     position: absolute;
+    min-width: 320px;
     top: 48px;
     left: 0;
     width: 100%;

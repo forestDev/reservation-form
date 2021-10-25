@@ -88,7 +88,7 @@ export default {
   margin-top: 2 * $gap;
   margin-left: auto;
   margin-right: auto;
-  max-width: 320px;
+  max-width: 720px;
   border: 1px solid $gray;
   border-radius: $radius;
   padding: $gap;
