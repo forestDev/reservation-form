@@ -113,9 +113,9 @@ export default {
           .year(this.yearOfPrevMonth)
           .daysInMonth();
         for (
-          let i = numberDaysOfPrevMonth;
-          i > numberDaysOfPrevMonth - numberPrevMonthDaysToDisplay;
-          i--
+          let i = numberDaysOfPrevMonth - numberPrevMonthDaysToDisplay;
+          i <= numberDaysOfPrevMonth;
+          i++
         ) {
           prevDays.push({
             date: dayjs()
