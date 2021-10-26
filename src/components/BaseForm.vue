@@ -22,7 +22,7 @@
       </span>
     </div>
     <div class="form__line"></div>
-    <calendar />
+    <calendar :selectedDates="selectedDates" :disabledDates="disabledDates" />
     <base-button class="form__bttn" @click="submit"> Rezerwuj </base-button>
   </form>
 </template>
@@ -51,6 +51,14 @@ export default {
     opinionsNumber: {
       type: Number,
       default: 0,
+    },
+    selectedDates: {
+      type: Array,
+      default: () => [],
+    },
+    disabledDates: {
+      type: Array,
+      default: () => [],
     },
     stars: {
       type: Number,

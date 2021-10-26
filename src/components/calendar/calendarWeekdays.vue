@@ -1,6 +1,9 @@
 <template>
   <div>
-    <ul class="calendar-body">
+    <ul
+      class="calendar-body"
+      :class="{ 'calendar-body--error': isDisabledDateInRangeDates }"
+    >
       <li
         class="calendar-body__item calendar-body__item--verbose-days"
         v-for="verboseDay in verboseDays"
@@ -22,6 +25,7 @@
           'calendar-body__item--selected-range': isBetweenSelectedDates(
             item.date
           ),
+          'calendar-body__item--disabled': isDisabled(item.date),
         }"
         v-for="(item, idx) in days"
         :key="idx"
@@ -52,11 +56,18 @@ export default {
       type: Array,
       default: () => [],
     },
+    disabledDates: {
+      type: Array,
+      default: () => [],
+    },
   },
   data: () => ({
     verboseDays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
   }),
   methods: {
+    isDisabled(date) {
+      return this.disabledDates.includes(date);
+    },
     isFirstSelectedDate(date) {
       return dayjs(this.selectedRangeDates[0]).isSame(dayjs(date));
     },
@@ -70,7 +81,9 @@ export default {
       );
     },
     onSelect(item) {
-      this.$emit("select", item);
+      if (!this.isDisabled(item.date) && !this.isDisabledDateInRangeDates) {
+        this.$emit("select", item);
+      }
     },
     onHover(item) {
       this.$emit("hoverDay", item);
@@ -79,13 +92,21 @@ export default {
       return dayjs(date).get("date");
     },
     isToday(date) {
-      return dayjs(date).isSame(dayjs().format("YYYY-MM-DD", "day"));
+      return dayjs(date).isSame(dayjs().format("YYYY.MM.DD"));
+    },
+  },
+  computed: {
+    isDisabledDateInRangeDates() {
+      return this.disabledDates.some((date) =>
+        this.isBetweenSelectedDates(date)
+      );
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+// TODO: Refactor styles
 .calendar-body {
   display: grid;
   grid-template-rows: repeat(5, 1fr);
@@ -94,7 +115,24 @@ export default {
   background: $white;
   margin: 0;
   box-shadow: 0px 0 12px lighten($black, 80%);
-
+  &--error {
+    .calendar-body__item--selected-range,
+    .calendar-body__item--selected-first-day::after,
+    .calendar-body__item--selected-second-day::after {
+      background-color: $highlight-red !important;
+      z-index: 0;
+      color: $red;
+    }
+    .calendar-body__item--selected-first-day::before,
+    .calendar-body__item--selected-second-day::before {
+      background-color: $red;
+      border-color: $red;
+    }
+    .calendar-body__item--day:hover::before {
+      background-color: $red !important;
+      border-color: $highlight-red !important;
+    }
+  }
   &__item {
     display: flex;
     align-items: center;
@@ -147,13 +185,18 @@ export default {
         background-color: $highlight;
       }
     }
+    &--disabled {
+      color: $red;
+    }
     &--selected-range {
       background-color: $highlight;
       color: $primary;
     }
     &--day {
       position: relative;
-      &:hover {
+      margin-bottom: 0.5 * $gap;
+      max-height: 48px;
+      &:hover:not(.calendar-body__item--disabled) {
         &::before {
           @include day-circle;
           content: "";
@@ -165,6 +208,9 @@ export default {
           z-index: 2;
         }
       }
+    }
+    &--disabled {
+      cursor: not-allowed;
     }
     &--verbose-days {
       color: $gray;

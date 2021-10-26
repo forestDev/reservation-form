@@ -1,6 +1,12 @@
 <template>
   <div>
-    <base-form :price="price" :stars="stars" :currency="currency" />
+    <base-form
+      :price="price"
+      :stars="stars"
+      :currency="currency"
+      :selectedDates="selectedDates"
+      :disabledDates="disabledDates"
+    />
   </div>
 </template>
 
@@ -15,6 +21,9 @@ export default {
     stars: 4.5,
     price: 298,
     currency: "zł",
+    // TODO: Handle different format
+    selectedDates: ["2021.10.20", "2021.10.13"],
+    disabledDates: ["2021.10.08"],
   }),
 };
 </script>

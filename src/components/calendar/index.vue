@@ -27,6 +27,7 @@
           :days="daysToDisplay"
           @select="onSelectDay"
           :selectedRangeDates="selectedRangeDates"
+          :disabledDates="disabledDates"
           @hoverDay="setPreviewDate"
         />
       </div>
@@ -63,14 +64,31 @@ export default {
       type: String,
       default: "",
     },
+    selectedDates: {
+      type: Array,
+      default: () => [],
+    },
+    disabledDates: {
+      type: Array,
+      default: () => [dayjs().format("YYYY.MM.DD")],
+    },
   },
   created() {
     this.now = dayjs();
     this.measureDaysToDisplay();
+    this.setSelectedDates();
   },
   methods: {
     setPreviewDate(item) {
       this.previewDate = item.date;
+    },
+    setSelectedDates() {
+      if (this.selectedDates.length) {
+        const sortedDates = this.sortDates(this.selectedDates);
+        this.checkIn = sortedDates[0];
+        this.checkOut = sortedDates[sortedDates.length - 1];
+        this.handleSelectedRange();
+      }
     },
     onSelectDay(item) {
       if (!this.checkIn) {
@@ -169,6 +187,11 @@ export default {
         ...this.getNextMonthDays(),
       ];
     },
+    sortDates(datesList) {
+      return datesList.sort((a, b) => {
+        if (dayjs(b).isAfter(a)) return -1;
+      });
+    },
   },
   computed: {
     selectedRangeDates() {
@@ -181,9 +204,7 @@ export default {
       } else if (this.checkOut) {
         ranges.push(this.checkOut);
       }
-      return ranges.sort((a, b) => {
-        if (dayjs(b).isAfter(a)) return -1;
-      });
+      return this.sortDates(ranges);
     },
     prevMonth() {
       return this.selectedMonth === 0 ? 11 : this.selectedMonth - 1;
