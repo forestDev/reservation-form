@@ -131,7 +131,7 @@ export default {
   },
   methods: {
     onSubmit() {
-      console.log("todo");
+      this.$emit("submit");
     },
   },
 };

@@ -2,7 +2,6 @@
   <div class="app">
     <base-form
       v-if="!showControls"
-      ref="form"
       class="reservation-form"
       v-model="userName"
       :price="price"
@@ -17,6 +16,7 @@
       :calendarLabel="calendarLabel"
       :userNameLabel="userNameLabel"
       @selectedDates="onSelectDates"
+      @submit="handleReservation"
     />
     <button class="controls-bttn" @click="showControls = !showControls">
       {{ showControls ? "Hide controls" : "Show controls" }}
@@ -92,6 +92,10 @@ export default {
     onSelectDates(dates) {
       this.selectedDates = dates;
     },
+    handleReservation() {
+      console.info("username", this.userName);
+      console.info("selectedDates", this.selectedDates);
+    },
   },
   watch: {
     activeDatesFrom() {
@@ -99,6 +103,12 @@ export default {
     },
     activeDatesTo() {
       this.selectedDates = [];
+    },
+    disabledDates: {
+      deep: true,
+      handler() {
+        this.selectedDates = [];
+      },
     },
   },
 };
