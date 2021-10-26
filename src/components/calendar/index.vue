@@ -1,11 +1,7 @@
 <template>
-  <div>
-    <pre>
-          {{ selectedRangeDates }}
-      </pre
-    >
+  <div v-clickoutside="onOutsideClick">
     <label v-if="label">{{ label }}</label>
-    <div class="wrapper">
+    <div class="wrapper" @click="isActive = true">
       <div class="wrapper__input">
         {{ checkIn ? checkIn : checkInPlaceholder }}
       </div>
@@ -17,7 +13,7 @@
       <div class="wrapper__input">
         {{ checkOut ? checkOut : checkOutPlaceholder }}
       </div>
-      <div class="calendar">
+      <div class="calendar" v-if="isActive">
         <calendar-header
           :month.sync="selectedMonth"
           :year.sync="selectedYear"
@@ -31,6 +27,7 @@
           @hoverDay="setPreviewDate"
           :activeDatesFrom="activeDatesFrom"
           :activeDatesTo="activeDatesTo"
+          :formatDates="formatDates"
         />
       </div>
     </div>
@@ -43,7 +40,10 @@ import calendarHeader from "./calendarHeader.vue";
 import calendarWeekdays from "./calendarWeekdays.vue";
 
 const weekday = require("dayjs/plugin/weekday");
+const customParseFormat = require("dayjs/plugin/customParseFormat");
+
 dayjs.extend(weekday);
+dayjs.extend(customParseFormat);
 
 export default {
   components: {
@@ -60,6 +60,7 @@ export default {
     checkIn: null,
     checkOut: null,
     previewDate: null,
+    isActive: false,
   }),
   props: {
     label: {
@@ -82,6 +83,10 @@ export default {
       type: String,
       default: "",
     },
+    formatDates: {
+      type: String,
+      default: "YYYY.MM.DD",
+    },
   },
   created() {
     this.now = dayjs();
@@ -89,6 +94,11 @@ export default {
     this.setSelectedDates();
   },
   methods: {
+    onOutsideClick() {
+      if (this.isActive) {
+        this.isActive = false;
+      }
+    },
     setPreviewDate(item) {
       this.previewDate = item.date;
     },
@@ -124,12 +134,20 @@ export default {
       this.daysToDisplay = this.getDaysToDisplay().slice(0, 35);
     },
     getFirstDateOfSelectedMonth() {
-      return dayjs(`01.${this.selectedMonth + 1}.${this.selectedYear}`).format(
-        "DD.MM.YYYY"
-      );
+      return dayjs()
+        .date(1)
+        .month(this.selectedMonth)
+        .year(this.selectedYear)
+        .format(this.formatDates);
     },
     getNumberOfPrevMonthDaysToDisplay() {
-      return dayjs(this.getFirstDateOfSelectedMonth()).weekday();
+      const weekdayFirstDayOfSelectedMonth = dayjs(
+        this.getFirstDateOfSelectedMonth(),
+        this.formatDates
+      ).weekday();
+      return weekdayFirstDayOfSelectedMonth === 0
+        ? weekdayFirstDayOfSelectedMonth
+        : weekdayFirstDayOfSelectedMonth - 1;
     },
     getPrevMonthDays() {
       const prevDays = [];
@@ -150,7 +168,7 @@ export default {
               .date(i)
               .month(this.prevMonth)
               .year(this.yearOfPrevMonth)
-              .format("YYYY.MM.DD"),
+              .format(this.formatDates),
             isCurrentMonth: false,
           });
         }
@@ -169,7 +187,7 @@ export default {
             .date(i)
             .month(this.selectedMonth)
             .year(this.selectedYear)
-            .format("YYYY.MM.DD"),
+            .format(this.formatDates),
           isCurrentMonth: true,
         });
       }
@@ -184,7 +202,7 @@ export default {
             .date(i)
             .month(this.nextMonth)
             .year(this.yearOfNextMonth)
-            .format("YYYY.MM.DD"),
+            .format(this.formatDates),
           isCurrentMonth: false,
         });
       }
@@ -199,8 +217,30 @@ export default {
     },
     sortDates(datesList) {
       return datesList.sort((a, b) => {
-        if (dayjs(b).isAfter(a)) return -1;
+        return dayjs(b, this.formatDates).isAfter(dayjs(a, this.formatDates))
+          ? -1
+          : 1;
       });
+    },
+  },
+  directives: {
+    clickoutside: {
+      inserted: (el, binding, vnode) => {
+        el.clickOutsideEvent = function (event) {
+          if (!(el == event.target || el.contains(event.target))) {
+            vnode.context[binding.expression](event);
+          }
+        };
+        document.body.addEventListener("click", el.clickOutsideEvent);
+        document.body.addEventListener("touchstart", el.clickOutsideEvent);
+      },
+      unbind: function (el) {
+        document.body.removeEventListener("click", el.clickOutsideEvent);
+        document.body.removeEventListener("touchstart", el.clickOutsideEvent);
+      },
+      stopProp(event) {
+        event.stopPropagation();
+      },
     },
   },
   computed: {

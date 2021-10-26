@@ -31,7 +31,9 @@
 import dayjs from "dayjs";
 
 const isBetween = require("dayjs/plugin/isBetween");
+const customParseFormat = require("dayjs/plugin/customParseFormat");
 dayjs.extend(isBetween);
+dayjs.extend(customParseFormat);
 
 export default {
   props: {
@@ -55,11 +57,18 @@ export default {
       type: String,
       default: "",
     },
+    formatDates: {
+      type: String,
+      default: "YYYY.MM.DD",
+    },
   },
   data: () => ({
     verboseDays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
   }),
   methods: {
+    parseDate(date) {
+      return dayjs(date, this.formatDates);
+    },
     isDisabled(date) {
       return (
         this.disabledDates.includes(date) ||
@@ -69,26 +78,32 @@ export default {
     },
     isEarlierThanActiveDatesFrom(date) {
       if (this.activeDatesFrom) {
-        return dayjs(date).isBefore(dayjs(this.activeDatesFrom));
+        return this.parseDate(date).isBefore(
+          this.parseDate(this.activeDatesFrom)
+        );
       }
       return false;
     },
     isLaterThanActiveDatesTo(date) {
       if (this.activeDatesTo) {
-        return dayjs(date).isAfter(dayjs(this.activeDatesTo));
+        return this.parseDate(date).isAfter(this.parseDate(this.activeDatesTo));
       }
       return false;
     },
     isFirstSelectedDate(date) {
-      return dayjs(this.selectedRangeDates[0]).isSame(dayjs(date));
+      return this.parseDate(this.selectedRangeDates[0]).isSame(
+        this.parseDate(date)
+      );
     },
     isSecondSelectedDate(date) {
-      return dayjs(this.selectedRangeDates[1]).isSame(dayjs(date));
+      return this.parseDate(this.selectedRangeDates[1]).isSame(
+        this.parseDate(date)
+      );
     },
     isBetweenSelectedDates(date) {
-      return dayjs(date).isBetween(
-        this.selectedRangeDates[0],
-        this.selectedRangeDates[1]
+      return this.parseDate(date).isBetween(
+        this.parseDate(this.selectedRangeDates[0]),
+        this.parseDate(this.selectedRangeDates[1])
       );
     },
     onSelect(item) {
@@ -102,10 +117,10 @@ export default {
       }
     },
     asDay(date) {
-      return dayjs(date).get("date");
+      return this.parseDate(date).get("date");
     },
     isToday(date) {
-      return dayjs(date).isSame(dayjs().format("YYYY.MM.DD"));
+      return this.parseDate(date).isSame(dayjs());
     },
     getDayClasses(item) {
       return {

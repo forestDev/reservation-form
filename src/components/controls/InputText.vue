@@ -5,7 +5,7 @@
       type="text"
       id="input-text"
       :value="value"
-      @input="$emit('input', $event.target.value)"
+      @blur="$emit('input', $event.target.value)"
     />
     <button v-if="withBttn" @click="$emit('clickBtn')">{{ bttnText }}</button>
   </div>

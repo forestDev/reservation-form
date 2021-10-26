@@ -1,5 +1,5 @@
 <template>
-  <form class="form">
+  <form class="form" @submit.prevent>
     <p class="form__price">{{ price }} {{ currency }}</p>
     <div class="form__opinions">
       <img
@@ -27,8 +27,9 @@
       :disabledDates="disabledDates"
       :activeDatesFrom="activeDatesFrom"
       :activeDatesTo="activeDatesTo"
+      :formatDates="formatDates"
     />
-    <base-button class="form__bttn" @click="submit"> Rezerwuj </base-button>
+    <base-button class="form__bttn" @click="onSubmit"> Rezerwuj </base-button>
   </form>
 </template>
 
@@ -44,8 +45,11 @@ export default {
     Calendar,
     BaseButton,
   },
-  data: () => ({}),
   props: {
+    formatDates: {
+      type: String,
+      default: "YYYY.MM.DD",
+    },
     price: {
       type: Number,
       required: true,
@@ -68,11 +72,15 @@ export default {
     },
     activeDatesFrom: {
       type: String,
-      default: dayjs().format("YYYY.MM.DD"),
+      default: function () {
+        return dayjs().format(this.formatDates);
+      },
     },
     activeDatesTo: {
       type: String,
-      default: dayjs().add(1, "year").format("YYYY.MM.DD"),
+      default: function () {
+        return dayjs().add(1, "year").format(this.formatDates);
+      },
     },
     stars: {
       type: Number,
@@ -98,7 +106,7 @@ export default {
     },
   },
   methods: {
-    submit() {
+    onSubmit() {
       console.log("todo");
     },
   },
