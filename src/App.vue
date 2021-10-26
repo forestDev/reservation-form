@@ -13,6 +13,8 @@
       :activeDatesTo="activeDatesTo"
       :opinionsNumber="opinionsNumber"
       :formatDates="formatDates"
+      :calendarLabel="calendarLabel"
+      @selectedDates="onSelectDates"
     />
     <button class="controls-bttn" @click="showControls = !showControls">
       {{ showControls ? "Hide controls" : "Show controls" }}
@@ -20,9 +22,10 @@
     <div class="controls" v-if="showControls">
       Control props:
       <input-text v-model="currency" label="Currency" />
-      <input-text v-model="formatDates" label="date format:" />
-      <input-text v-model="activeDatesFrom" label="active dates from:" />
-      <input-text v-model="activeDatesTo" label="active dates to:" />
+      <input-text v-model="formatDates" label="Date format:" />
+      <input-text v-model="activeDatesFrom" label="Active dates from:" />
+      <input-text v-model="activeDatesTo" label="Active dates to:" />
+      <input-text v-model="calendarLabel" label="Calendar label" />
       <input-text
         @clickBtn="addDisabledDateToList"
         with-bttn
@@ -39,6 +42,8 @@
           ><br />{{ item }}
         </span>
       </div>
+      <p>Selected dates:</p>
+      <pre>{{ selectedDates }} </pre>
     </div>
   </div>
 </template>
@@ -63,6 +68,7 @@ export default {
     opinionsNumber: 298,
     activeDatesTo: undefined,
     disabledDates: [],
+    calendarLabel: "Dates",
 
     disabledDateToAdd: "",
     showControls: false,
@@ -75,6 +81,9 @@ export default {
     addDisabledDateToList() {
       this.disabledDates.push(this.disabledDateToAdd);
       this.disabledDateToAdd = "";
+    },
+    onSelectDates(dates) {
+      this.selectedDates = dates;
     },
   },
 };

@@ -1,6 +1,6 @@
 <template>
   <div v-clickoutside="onOutsideClick">
-    <label v-if="label">{{ label }}</label>
+    <label class="calendar-label" v-if="label">{{ label }}</label>
     <div class="wrapper" @click="isActive = true">
       <div class="wrapper__input">
         {{ checkIn ? checkIn : checkInPlaceholder }}
@@ -133,6 +133,7 @@ export default {
         this.checkIn = firstDate;
         this.checkOut = secondDate;
       }
+      this.$emit("selectedDates", [this.checkIn, this.checkOut]);
     },
     measureDaysToDisplay() {
       this.daysToDisplay = this.getDaysToDisplay().slice(0, 35);
@@ -281,6 +282,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.calendar-label {
+  display: block;
+  margin-bottom: 0.25 * $gap;
+  font-size: 14px;
+}
 .wrapper {
   position: relative;
   display: flex;

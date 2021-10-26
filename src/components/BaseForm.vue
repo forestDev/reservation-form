@@ -23,11 +23,14 @@
     </div>
     <div class="form__line"></div>
     <calendar
+      class="form__calendar"
+      :label="calendarLabel"
       :selectedDates="selectedDates"
       :disabledDates="disabledDates"
       :activeDatesFrom="activeDatesFrom"
       :activeDatesTo="activeDatesTo"
       :formatDates="formatDates"
+      @selectedDates="$emit('selectedDates', $event)"
     />
     <base-button class="form__bttn" @click="onSubmit"> Rezerwuj </base-button>
   </form>
@@ -46,6 +49,10 @@ export default {
     BaseButton,
   },
   props: {
+    calendarLabel: {
+      type: String,
+      default: "",
+    },
     formatDates: {
       type: String,
       default: "YYYY.MM.DD",
@@ -120,7 +127,7 @@ export default {
   padding: $gap;
   &__line {
     @include horizontal-line;
-    margin: 0.5 * $gap 0;
+    margin: $gap 0;
   }
   &__price {
     margin: 0;
@@ -142,6 +149,9 @@ export default {
     font-size: 12px;
   }
   &__bttn {
+    margin-top: $gap;
+  }
+  &__calendar {
     margin-top: $gap;
   }
 }

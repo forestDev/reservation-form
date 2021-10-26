@@ -234,6 +234,7 @@ export default {
     }
     &--disabled {
       color: $red;
+      opacity: 0.5;
     }
     &--selected-range:not(.calendar-body__item--disabled) {
       background-color: $highlight;
