@@ -122,7 +122,11 @@ export default {
       }
     },
     handleSelectedRange(firstDate = this.checkIn, secondDate = this.checkOut) {
-      if (dayjs(firstDate).isAfter(secondDate)) {
+      if (
+        dayjs(firstDate, this.formatDates).isAfter(
+          dayjs(secondDate, this.formatDates)
+        )
+      ) {
         this.checkIn = secondDate;
         this.checkOut = firstDate;
       } else {
