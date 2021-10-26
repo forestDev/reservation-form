@@ -1,6 +1,7 @@
 <template>
   <div>
     <base-form
+      class="reservation-form"
       :price="price"
       :stars="stars"
       :currency="currency"
@@ -28,4 +29,11 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.reservation-form {
+  max-width: 480px;
+  margin-top: 2 * $gap;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>

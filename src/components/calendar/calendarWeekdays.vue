@@ -137,7 +137,10 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2vw;
+    padding: 5px;
+    @media (min-width: 768px) {
+      padding: 18px;
+    }
     &--gray {
       color: $gray;
     }

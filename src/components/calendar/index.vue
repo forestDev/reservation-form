@@ -248,7 +248,8 @@ export default {
   }
   .calendar {
     position: absolute;
-    min-width: 320px;
+    min-width: 260px;
+    width: 100%;
     top: 48px;
     left: 0;
     width: 100%;
