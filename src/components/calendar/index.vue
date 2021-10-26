@@ -56,7 +56,6 @@ export default {
     selectedMonth: dayjs().month(),
     selectedYear: dayjs().year(),
     daysToDisplay: [],
-    now: null,
     checkIn: null,
     checkOut: null,
     previewDate: null,
@@ -89,7 +88,6 @@ export default {
     },
   },
   created() {
-    this.now = dayjs();
     this.measureDaysToDisplay();
     this.setSelectedDates();
   },

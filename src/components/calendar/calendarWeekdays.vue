@@ -150,7 +150,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// TODO: Refactor styles
 .calendar-body {
   display: grid;
   grid-template-rows: repeat(5, 1fr);

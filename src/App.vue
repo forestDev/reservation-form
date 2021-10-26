@@ -69,7 +69,7 @@ export default {
     stars: 4.5,
     price: 298,
     currency: "zł",
-    selectedDates: [],
+    selectedDates: ["01.12.2021", "05.12.2021"],
     activeDatesFrom: undefined,
     opinionsNumber: 298,
     activeDatesTo: undefined,
@@ -91,6 +91,14 @@ export default {
     },
     onSelectDates(dates) {
       this.selectedDates = dates;
+    },
+  },
+  watch: {
+    activeDatesFrom() {
+      this.selectedDates = [];
+    },
+    activeDatesTo() {
+      this.selectedDates = [];
     },
   },
 };
