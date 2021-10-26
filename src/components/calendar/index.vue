@@ -29,6 +29,8 @@
           :selectedRangeDates="selectedRangeDates"
           :disabledDates="disabledDates"
           @hoverDay="setPreviewDate"
+          :activeDatesFrom="activeDatesFrom"
+          :activeDatesTo="activeDatesTo"
         />
       </div>
     </div>
@@ -70,7 +72,15 @@ export default {
     },
     disabledDates: {
       type: Array,
-      default: () => [dayjs().format("YYYY.MM.DD")],
+      default: () => [],
+    },
+    activeDatesFrom: {
+      type: String,
+      default: "",
+    },
+    activeDatesTo: {
+      type: String,
+      default: "",
     },
   },
   created() {
@@ -199,7 +209,7 @@ export default {
       if (this.checkIn) {
         ranges.push(this.checkIn);
       }
-      if (!this.checkOut && this.previewDate) {
+      if (this.checkIn && !this.checkOut && this.previewDate) {
         ranges.push(this.previewDate);
       } else if (this.checkOut) {
         ranges.push(this.checkOut);

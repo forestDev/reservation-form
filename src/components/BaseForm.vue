@@ -22,7 +22,12 @@
       </span>
     </div>
     <div class="form__line"></div>
-    <calendar :selectedDates="selectedDates" :disabledDates="disabledDates" />
+    <calendar
+      :selectedDates="selectedDates"
+      :disabledDates="disabledDates"
+      :activeDatesFrom="activeDatesFrom"
+      :activeDatesTo="activeDatesTo"
+    />
     <base-button class="form__bttn" @click="submit"> Rezerwuj </base-button>
   </form>
 </template>
@@ -30,6 +35,7 @@
 <script>
 import Calendar from "@/components/calendar/index";
 import BaseButton from "@/components/BaseButton";
+import dayjs from "dayjs";
 
 const MAX_STARS = 5;
 
@@ -59,6 +65,14 @@ export default {
     disabledDates: {
       type: Array,
       default: () => [],
+    },
+    activeDatesFrom: {
+      type: String,
+      default: dayjs().format("YYYY.MM.DD"),
+    },
+    activeDatesTo: {
+      type: String,
+      default: dayjs().add(1, "year").format("YYYY.MM.DD"),
     },
     stars: {
       type: Number,

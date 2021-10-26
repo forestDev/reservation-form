@@ -13,20 +13,7 @@
       </li>
       <li
         class="calendar-body__item calendar-body__item--day"
-        :class="{
-          'calendar-body__item--gray': !item.isCurrentMonth,
-          'calendar-body__item--current-day': isToday(item.date),
-          'calendar-body__item--selected-first-day': isFirstSelectedDate(
-            item.date
-          ),
-          'calendar-body__item--selected-second-day': isSecondSelectedDate(
-            item.date
-          ),
-          'calendar-body__item--selected-range': isBetweenSelectedDates(
-            item.date
-          ),
-          'calendar-body__item--disabled': isDisabled(item.date),
-        }"
+        :class="getDayClasses(item)"
         v-for="(item, idx) in days"
         :key="idx"
         @click="onSelect(item)"
@@ -60,13 +47,37 @@ export default {
       type: Array,
       default: () => [],
     },
+    activeDatesFrom: {
+      type: String,
+      default: "",
+    },
+    activeDatesTo: {
+      type: String,
+      default: "",
+    },
   },
   data: () => ({
     verboseDays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
   }),
   methods: {
     isDisabled(date) {
-      return this.disabledDates.includes(date);
+      return (
+        this.disabledDates.includes(date) ||
+        this.isEarlierThanActiveDatesFrom(date) ||
+        this.isLaterThanActiveDatesTo(date)
+      );
+    },
+    isEarlierThanActiveDatesFrom(date) {
+      if (this.activeDatesFrom) {
+        return dayjs(date).isBefore(dayjs(this.activeDatesFrom));
+      }
+      return false;
+    },
+    isLaterThanActiveDatesTo(date) {
+      if (this.activeDatesTo) {
+        return dayjs(date).isAfter(dayjs(this.activeDatesTo));
+      }
+      return false;
     },
     isFirstSelectedDate(date) {
       return dayjs(this.selectedRangeDates[0]).isSame(dayjs(date));
@@ -86,7 +97,9 @@ export default {
       }
     },
     onHover(item) {
-      this.$emit("hoverDay", item);
+      if (!this.isDisabled(item.date)) {
+        this.$emit("hoverDay", item);
+      }
     },
     asDay(date) {
       return dayjs(date).get("date");
@@ -94,12 +107,28 @@ export default {
     isToday(date) {
       return dayjs(date).isSame(dayjs().format("YYYY.MM.DD"));
     },
+    getDayClasses(item) {
+      return {
+        "calendar-body__item--gray": !item.isCurrentMonth,
+        "calendar-body__item--current-day": this.isToday(item.date),
+        "calendar-body__item--selected-first-day": this.isFirstSelectedDate(
+          item.date
+        ),
+        "calendar-body__item--selected-second-day": this.isSecondSelectedDate(
+          item.date
+        ),
+        "calendar-body__item--selected-range": this.isBetweenSelectedDates(
+          item.date
+        ),
+        "calendar-body__item--disabled": this.isDisabled(item.date),
+      };
+    },
   },
   computed: {
     isDisabledDateInRangeDates() {
-      return this.disabledDates.some((date) =>
-        this.isBetweenSelectedDates(date)
-      );
+      return this.disabledDates.some((date) => {
+        return this.isBetweenSelectedDates(date);
+      });
     },
   },
 };
@@ -121,7 +150,7 @@ export default {
     .calendar-body__item--selected-second-day::after {
       background-color: $highlight-red !important;
       z-index: 0;
-      color: $red;
+      color: $red !important;
     }
     .calendar-body__item--selected-first-day::before,
     .calendar-body__item--selected-second-day::before {
@@ -166,7 +195,7 @@ export default {
         z-index: 2;
       }
     }
-    &--selected-first-day:not(.calendar-body__item--selected-second-day) {
+    &--selected-first-day:not(.calendar-body__item--selected-second-day):not(.calendar-body__item--disabled) {
       &::after {
         content: "";
         position: absolute;
@@ -177,7 +206,7 @@ export default {
         background-color: $highlight;
       }
     }
-    &--selected-second-day:not(.calendar-body__item--selected-first-day) {
+    &--selected-second-day:not(.calendar-body__item--selected-first-day):not(.calendar-body__item--disabled) {
       &::after {
         content: "";
         position: absolute;
@@ -191,7 +220,7 @@ export default {
     &--disabled {
       color: $red;
     }
-    &--selected-range {
+    &--selected-range:not(.calendar-body__item--disabled) {
       background-color: $highlight;
       color: $primary;
     }
