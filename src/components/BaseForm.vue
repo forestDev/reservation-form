@@ -32,6 +32,13 @@
       :formatDates="formatDates"
       @selectedDates="$emit('selectedDates', $event)"
     />
+    <base-input
+      class="form__name"
+      :value="userName"
+      :label="userNameLabel"
+      placeholder="Type name"
+      @input="$emit('input', $event)"
+    />
     <base-button class="form__bttn" @click="onSubmit"> Rezerwuj </base-button>
   </form>
 </template>
@@ -39,6 +46,7 @@
 <script>
 import Calendar from "@/components/calendar/index";
 import BaseButton from "@/components/BaseButton";
+import BaseInput from "@/components/BaseInput";
 import dayjs from "dayjs";
 
 const MAX_STARS = 5;
@@ -47,8 +55,17 @@ export default {
   components: {
     Calendar,
     BaseButton,
+    BaseInput,
   },
   props: {
+    userNameLabel: {
+      type: String,
+      default: "",
+    },
+    userName: {
+      type: String,
+      default: "",
+    },
     calendarLabel: {
       type: String,
       default: "",
@@ -152,6 +169,9 @@ export default {
     margin-top: $gap;
   }
   &__calendar {
+    margin-top: $gap;
+  }
+  &__name {
     margin-top: $gap;
   }
 }

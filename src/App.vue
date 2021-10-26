@@ -4,6 +4,7 @@
       v-if="!showControls"
       ref="form"
       class="reservation-form"
+      v-model="userName"
       :price="price"
       :stars="stars"
       :currency="currency"
@@ -14,6 +15,7 @@
       :opinionsNumber="opinionsNumber"
       :formatDates="formatDates"
       :calendarLabel="calendarLabel"
+      :userNameLabel="userNameLabel"
       @selectedDates="onSelectDates"
     />
     <button class="controls-bttn" @click="showControls = !showControls">
@@ -26,6 +28,7 @@
       <input-text v-model="activeDatesFrom" label="Active dates from:" />
       <input-text v-model="activeDatesTo" label="Active dates to:" />
       <input-text v-model="calendarLabel" label="Calendar label" />
+      <input-text v-model="userNameLabel" label="User name label" />
       <input-text
         @clickBtn="addDisabledDateToList"
         with-bttn
@@ -44,6 +47,8 @@
       </div>
       <p>Selected dates:</p>
       <pre>{{ selectedDates }} </pre>
+      <p>User name:</p>
+      <pre> {{ userName }}</pre>
     </div>
   </div>
 </template>
@@ -58,6 +63,7 @@ export default {
     InputText,
   },
   data: () => ({
+    userName: "",
     isVisible: true,
     formatDates: "DD.MM.YYYY",
     stars: 4.5,
@@ -69,6 +75,7 @@ export default {
     activeDatesTo: undefined,
     disabledDates: [],
     calendarLabel: "Dates",
+    userNameLabel: "Name",
 
     disabledDateToAdd: "",
     showControls: false,

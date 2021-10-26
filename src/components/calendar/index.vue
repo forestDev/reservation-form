@@ -283,9 +283,7 @@ export default {
 
 <style lang="scss" scoped>
 .calendar-label {
-  display: block;
-  margin-bottom: 0.25 * $gap;
-  font-size: 14px;
+  @include input-label;
 }
 .wrapper {
   position: relative;

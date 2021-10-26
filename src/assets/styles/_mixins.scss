@@ -13,3 +13,8 @@
     max-width: 48px;
     max-height: 48px;
 }
+@mixin input-label {
+    display: block;
+    margin-bottom: 0.25 * $gap;
+    font-size: 14px;
+}
