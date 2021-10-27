@@ -147,6 +147,9 @@ export default {
   margin-right: auto;
 }
 .controls {
+  @media (max-width: 768px) {
+    display: none;
+  }
   position: absolute;
   left: 50%;
   top: 50%;
@@ -162,6 +165,9 @@ export default {
   height: 100vh;
 }
 .controls-bttn {
+  @media (max-width: 768px) {
+    display: none;
+  }
   position: fixed;
   top: 10px;
   left: 10px;
