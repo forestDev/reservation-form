@@ -120,7 +120,9 @@ export default {
       return this.parseDate(date).get("date");
     },
     isToday(date) {
-      return this.parseDate(date).isSame(dayjs());
+      return this.parseDate(date).isSame(
+        this.parseDate(dayjs().format(this.formatDates))
+      );
     },
     getDayClasses(item) {
       return {
@@ -243,16 +245,18 @@ export default {
       position: relative;
       margin-bottom: 0.5 * $gap;
       max-height: 48px;
-      &:hover:not(.calendar-body__item--disabled) {
-        &::before {
-          @include day-circle;
-          content: "";
-          position: absolute;
-          background-color: $primary;
-        }
-        span {
-          color: $white;
-          z-index: 2;
+      @media (min-width: 768px) {
+        &:hover:not(.calendar-body__item--disabled) {
+          &::before {
+            @include day-circle;
+            content: "";
+            position: absolute;
+            background-color: $primary;
+          }
+          span {
+            color: $white;
+            z-index: 2;
+          }
         }
       }
     }

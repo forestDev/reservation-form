@@ -2,6 +2,7 @@
   <div>
     <label class="label" for="input-text">{{ label }}</label>
     <input
+      :placeholder="placeholder"
       type="text"
       id="input-text"
       :value="value"
@@ -27,6 +28,10 @@ export default {
     withBttn: {
       type: Boolean,
       default: false,
+    },
+    placeholder: {
+      type: String,
+      default: "",
     },
   },
 };

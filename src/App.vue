@@ -3,7 +3,7 @@
     <base-form
       v-if="!showControls"
       class="reservation-form"
-      v-model="userName"
+      :userName="userName"
       :price="price"
       :stars="stars"
       :currency="currency"
@@ -17,6 +17,8 @@
       :userNameLabel="userNameLabel"
       @selectedDates="onSelectDates"
       @submit="handleReservation"
+      @inputName="handleInputName"
+      :isLoading="isSending"
     />
     <button class="controls-bttn" @click="showControls = !showControls">
       {{ showControls ? "Hide controls" : "Show controls" }}
@@ -25,11 +27,20 @@
       Control props:
       <input-text v-model="currency" label="Currency" />
       <input-text v-model="formatDates" label="Date format:" />
-      <input-text v-model="activeDatesFrom" label="Active dates from:" />
-      <input-text v-model="activeDatesTo" label="Active dates to:" />
+      <input-text
+        :placeholder="formatDates"
+        v-model="activeDatesFrom"
+        label="Active dates from:"
+      />
+      <input-text
+        :placeholder="formatDates"
+        v-model="activeDatesTo"
+        label="Active dates to:"
+      />
       <input-text v-model="calendarLabel" label="Calendar label" />
       <input-text v-model="userNameLabel" label="User name label" />
       <input-text
+        :placeholder="formatDates"
         @clickBtn="addDisabledDateToList"
         with-bttn
         v-model="disabledDateToAdd"
@@ -69,18 +80,21 @@ export default {
     stars: 4.5,
     price: 298,
     currency: "zł",
-    selectedDates: ["01.12.2021", "05.12.2021"],
+    selectedDates: [],
     activeDatesFrom: undefined,
     opinionsNumber: 298,
     activeDatesTo: undefined,
     disabledDates: [],
     calendarLabel: "Dates",
     userNameLabel: "Name",
-
+    isSending: false,
     disabledDateToAdd: "",
     showControls: false,
   }),
   methods: {
+    handleInputName(name) {
+      this.userName = name;
+    },
     deleteDisabledDateFormList(item) {
       const idxItem = this.disabledDates.indexOf((date) => date === item);
       this.disabledDates.splice(idxItem, 1);
@@ -92,9 +106,20 @@ export default {
     onSelectDates(dates) {
       this.selectedDates = dates;
     },
-    handleReservation() {
-      console.info("username", this.userName);
-      console.info("selectedDates", this.selectedDates);
+    async handleReservation() {
+      console.log("username", this.userName);
+      console.log("selectedDates", this.selectedDates);
+      this.isSending = true;
+      const response = await this.mockApiCall();
+      console.log(response);
+      this.isSending = false;
+    },
+    mockApiCall() {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve("Done");
+        }, 2000);
+      });
     },
   },
   watch: {

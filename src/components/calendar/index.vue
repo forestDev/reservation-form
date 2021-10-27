@@ -13,7 +13,7 @@
       <div class="wrapper__input">
         {{ checkOut ? checkOut : checkOutPlaceholder }}
       </div>
-      <div class="calendar" v-if="isActive">
+      <div class="wrapper__calendar" v-if="isActive">
         <calendar-header
           :month.sync="selectedMonth"
           :year.sync="selectedYear"
@@ -302,13 +302,14 @@ export default {
     justify-content: center;
     width: 100%;
   }
-  .calendar {
+  &__calendar {
     position: absolute;
     min-width: 260px;
     width: 100%;
     top: 48px;
     left: 0;
     width: 100%;
+    z-index: 10;
   }
 }
 </style>

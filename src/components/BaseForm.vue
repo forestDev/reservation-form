@@ -37,9 +37,16 @@
       :value="userName"
       :label="userNameLabel"
       placeholder="Type name"
-      @input="$emit('input', $event)"
+      @input="$emit('inputName', $event)"
     />
-    <base-button class="form__bttn" @click="onSubmit"> Rezerwuj </base-button>
+    <base-button
+      class="form__bttn"
+      @click="onSubmit"
+      :is-loading="isLoading"
+      :isDisabled="!selectedDates.length || !userName"
+    >
+      Send
+    </base-button>
   </form>
 </template>
 
@@ -61,6 +68,10 @@ export default {
     userNameLabel: {
       type: String,
       default: "",
+    },
+    isLoading: {
+      type: Boolean,
+      default: false,
     },
     userName: {
       type: String,
