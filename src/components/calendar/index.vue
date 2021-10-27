@@ -148,9 +148,8 @@ export default {
         this.getFirstDateOfSelectedMonth(),
         this.formatDates
       ).weekday();
-      return weekdayFirstDayOfSelectedMonth === 0
-        ? weekdayFirstDayOfSelectedMonth
-        : weekdayFirstDayOfSelectedMonth - 1;
+
+      return weekdayFirstDayOfSelectedMonth;
     },
     getPrevMonthDays() {
       const prevDays = [];
@@ -162,7 +161,7 @@ export default {
           .year(this.yearOfPrevMonth)
           .daysInMonth();
         for (
-          let i = numberDaysOfPrevMonth - numberPrevMonthDaysToDisplay;
+          let i = numberDaysOfPrevMonth - numberPrevMonthDaysToDisplay + 1;
           i <= numberDaysOfPrevMonth;
           i++
         ) {
