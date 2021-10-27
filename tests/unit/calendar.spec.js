@@ -8,7 +8,7 @@ describe("Mounted calendar", () => {
   });
   test("Does calendar is open after click", async () => {
     await wrapper.find(".wrapper").trigger("click");
-    expect(wrapper.find(".calendar").exists()).toBe(true);
+    expect(wrapper.find(".wrapper__calendar").exists()).toBe(true);
   });
   test("Does CheckIn/CheckOut is set after click in dates", async () => {
     await wrapper.find(".wrapper").trigger("click");
